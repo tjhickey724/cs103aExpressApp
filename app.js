@@ -5,11 +5,11 @@
 // First we load in all of the packages we need for the server...
 const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const debug = require("debug")("personalapp:server");
+const path = require("path");  // to refer to local paths
+const cookieParser = require("cookie-parser"); // to handle cookies
+const session = require("express-session"); // to handle sessions
+const bodyParser = require("body-parser"); // to handle HTML form input
+const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
 
@@ -18,13 +18,15 @@ console.log('mdb='+process.env.MONGODB_URI)
 
 // connect to a database
 const mongoose = require( 'mongoose' );
-const mongodb_URI = process.env.MONGODB_URI // was 'mongodb://localhost/hsad'
+const mongodb_URI = 'mongodb://localhost:27017/cs103a' //process.env.MONGODB_URI
 console.log("MONGODB_URI="+mongodb_URI)
 mongoose.connect( mongodb_URI, { useNewUrlParser: true } );
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {console.log("we are connected!!!")});
 
+
+// middleware to test is the user is logged in, and if not, send them to the login page
 const isLoggedIn = (req,res,next) => {
   if (res.locals.loggedIn) {
     next()
@@ -39,12 +41,16 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// this allows us to use page layout for the views 
+// so we don't have to repeat the headers and footers on every page ...
+// the layout is in views/layout.ejs
 app.use(layouts);
 
 // Here we process the requests so they are easy to handle
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Here we specify that static files will be in the public folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -52,13 +58,13 @@ app.use(express.static(path.join(__dirname, "public")));
 // Here we enable session handling ..
 app.use(
   session({
-    secret: "zzbbyanana789sdfa",
+    secret: "zzbbyanana789sdfa7f8d9s789fds",
     resave: false,
     saveUninitialized: false
   })
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
+
 
 
 // here we handle some routes in their own routing file
