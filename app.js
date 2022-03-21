@@ -1,45 +1,48 @@
 /*
-  app.js -- This creates an Express webserver
+  app.js -- This creates an Express webserver with login/register/logout authentication
 */
 
+// *********************************************************** //
+//  Loading packages to support the server
+// *********************************************************** //
 // First we load in all of the packages we need for the server...
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");  // to refer to local paths
 const cookieParser = require("cookie-parser"); // to handle cookies
-const session = require("express-session"); // to handle sessions
+const session = require("express-session"); // to handle sessions using cookies
 const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
 
-console.log('mdb='+process.env.MONGODB_URI)
 
+// *********************************************************** //
+//  Connecting to the database
+// *********************************************************** //
 
-// connect to a database
 const mongoose = require( 'mongoose' );
-const mongodb_URI = 'mongodb://localhost:27017/cs103a' //process.env.MONGODB_URI
-console.log("MONGODB_URI="+mongodb_URI)
+const mongodb_URI = 'mongodb://localhost:27017/cs103a'
+
 mongoose.connect( mongodb_URI, { useNewUrlParser: true } );
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {console.log("we are connected!!!")});
 
 
-// middleware to test is the user is logged in, and if not, send them to the login page
-const isLoggedIn = (req,res,next) => {
-  if (res.locals.loggedIn) {
-    next()
-  }
-  else res.redirect('/login')
-}
 
-// Now we create the server
+
+
+// *********************************************************** //
+//  Defining the routes the server will respond to
+// *********************************************************** //
 const app = express();
 
 // Here we specify that we will be using EJS as our view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+
 
 // this allows us to use page layout for the views 
 // so we don't have to repeat the headers and footers on every page ...
@@ -55,10 +58,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Here we specify that static files will be in the public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Here we enable session handling ..
+// Here we enable session handling using cookies
 app.use(
   session({
-    secret: "zzbbyanana789sdfa7f8d9s789fds",
+    secret: "zzbbyanana789sdfa7f8d9s789fds", // this ought to be hidden in process.env.SECRET
     resave: false,
     saveUninitialized: false
   })
@@ -67,27 +70,28 @@ app.use(
 
 
 
-// here we handle some routes in their own routing file
-// this keeps the main app.js more organized ...
+// here is the code which handles all login/register/logout routes
 const auth = require('./routes/auth')
 app.use(auth)
+
+// middleware to test is the user is logged in, and if not, send them to the login page
+const isLoggedIn = (req,res,next) => {
+  if (res.locals.loggedIn) {
+    next()
+  }
+  else res.redirect('/login')
+}
 
 
 app.get("/", (req, res, next) => {
   res.render("index");
 });
 
-app.get("/aboutPage", (req,res,next) => {
-  res.render("about")
-})
-
-app.get("/about", (req, res) => {
+app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
 
-
-// Don't change anything below here ...
 
 // here we catch 404 errors and forward to error handler
 app.use(function(req, res, next) {
@@ -104,6 +108,10 @@ app.use(function(err, req, res, next) {
   res.render("error");
 });
 
+
+// *********************************************************** //
+//  Starting up the server!
+// *********************************************************** //
 //Here we set the port to use
 const port = "5000";
 app.set("port", port);
