@@ -31,12 +31,19 @@
             <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
             </li>
+
             
             <% if (!loggedIn) {%>
             <li class="nav-item">
               <a class="nav-link" href="/login">Login/Signup</a>
             </li>
             <% } else { %>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/sandbox">Sandbox</a>
+              </li>
+            
+              
               <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout <%= username %></a>
               </li>
