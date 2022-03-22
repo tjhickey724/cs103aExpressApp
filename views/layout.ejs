@@ -24,31 +24,18 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
       
-            <li class="nav-item ">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
-      
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
-            </li>
-
-            
-            <% if (!loggedIn) {%>
-            <li class="nav-item">
-              <a class="nav-link" href="/login">Login/Signup</a>
-            </li>
-            <% } else { %>
+              <li class="nav-item ">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+              </li>
+        
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+              </li>
 
               <li class="nav-item">
                 <a class="nav-link" href="/sandbox">Sandbox</a>
               </li>
             
-              
-              <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout <%= username %></a>
-              </li>
-            <% } %>
-      
           </ul>
       
       

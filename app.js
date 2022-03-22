@@ -1,5 +1,6 @@
 /*
   app.js -- This creates an Express webserver with login/register/logout authentication
+  This version has removed all of the authentication and database management.
 */
 
 // *********************************************************** //
@@ -14,21 +15,6 @@ const session = require("express-session"); // to handle sessions using cookies
 const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
-
-
-
-// *********************************************************** //
-//  Connecting to the database
-// *********************************************************** //
-
-const mongoose = require( 'mongoose' );
-const mongodb_URI = 'mongodb://localhost:27017/cs103a'
-//const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-
-mongoose.connect( mongodb_URI, { useNewUrlParser: true } );
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {console.log("we are connected!!!")});
 
 
 
@@ -75,17 +61,6 @@ app.use(
 // *********************************************************** //
 
 
-// here is the code which handles all /login /signin /logout routes
-const auth = require('./routes/auth')
-app.use(auth)
-
-// middleware to test is the user is logged in, and if not, send them to the login page
-const isLoggedIn = (req,res,next) => {
-  if (res.locals.loggedIn) {
-    next()
-  }
-  else res.redirect('/login')
-}
 
 // specify that the server should render the views/index.ejs page for the root path
 // and the index.ejs code will be wrapped in the views/layouts.ejs code which provides
