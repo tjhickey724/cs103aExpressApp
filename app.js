@@ -83,6 +83,18 @@ app.get("/sandbox",
       }
 );
 
+app.get("/forms", 
+  (req, res, next) => {
+        res.render("formdemo");
+      }
+);
+
+app.post("/forms", 
+  (req, res, next) => {
+        res.json(req.body)
+      }
+);
+
 
 
 // here we catch 404 errors and forward to error handler
