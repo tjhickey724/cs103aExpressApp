@@ -95,6 +95,17 @@ app.post("/forms",
       }
 );
 
+app.get("/boots", 
+  (req, res, next) => {
+
+        res.render("bootstrapdemo");
+      }
+);
+
+app.get('/pets', (req,res,next) => {
+  res.render('pets')
+})
+
 
 
 // here we catch 404 errors and forward to error handler
