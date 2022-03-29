@@ -1,6 +1,19 @@
 /*
-  auth2.js uses bcrypt and salt to encode passwords ...
+  auth.js uses bcrypt and salt to encode passwords ...
+
+  This router defines the following routes
+  /signin (post)
+  /login (get and post)
+  /logout (get)
+
+  When the user logs in or signs in, 
+  it adds their user name and user object to the req.session for use in the app.js controller
+  and it sets the res.locals properties for use in the view
+  res.locals.loggedIn
+  res.local.username
+  res.locals.user
 */
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');

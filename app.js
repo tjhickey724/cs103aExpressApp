@@ -25,7 +25,7 @@ const ToDoItem = require("./models/ToDoItem")
 // *********************************************************** //
 
 const mongoose = require( 'mongoose' );
-const mongodb_URI = 'mongodb://localhost:27017/cs103a'
+const mongodb_URI = 'mongodb://localhost:27017/cs103a_todo'
 //const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 mongoose.connect( mongodb_URI, { useNewUrlParser: true } );
