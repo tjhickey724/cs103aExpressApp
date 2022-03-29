@@ -25,7 +25,7 @@ const User = require('../models/User')
 // This is an example of middleware
 // where we look at a request and process it!
 router.use(function(req, res, next) {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`${req.method} ${req.url} ${new Date()}`);
   next();
 });
 
