@@ -61,7 +61,7 @@ app.use(layouts);
 
 // Here we process the requests so they are easy to handle
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //app.use(bodyParser.urlencoded({ extended: false }));
 
