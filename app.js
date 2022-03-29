@@ -15,7 +15,10 @@ const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
-
+// *********************************************************** //
+//  Loading models
+// *********************************************************** //
+const ToDoItem = require("./models/ToDoItem")
 
 // *********************************************************** //
 //  Connecting to the database
@@ -107,6 +110,68 @@ app.get("/sandbox",
         res.render("sandbox");
       }
 );
+
+/*
+    ToDoList routes
+*/
+app.get('/todo',
+  isLoggedIn,   // redirect to /login if user is not logged in
+  async (req,res,next) => {
+    try{
+      let userId = res.locals.user._id;  // get the user's id
+      let items = await ToDoItem.find({userId:userId}); // lookup the user's todo items
+      res.locals.items = items;  //make the items available in the view
+      res.render("toDo");  // render to the toDo page
+    } catch (e){
+      next(e);
+    }
+  }
+  )
+
+  app.post('/todo/add',
+  isLoggedIn,
+  async (req,res,next) => {
+    try{
+      const {title,description} = req.body; // get title and description from the body
+      const userId = res.locals.user._id; // get the user's id
+      const createdAt = new Date(); // get the current date/time
+      let data = {title, description, userId, createdAt,} // create the data object
+      let item = new ToDoItem(data) // create the database object (and test the types are correct)
+      await item.save() // save the todo item in the database
+      res.redirect('/todo')  // go back to the todo page
+    } catch (e){
+      next(e);
+    }
+  }
+  )
+
+  app.get("/todo/delete/:itemId",
+    isLoggedIn,
+    async (req,res,next) => {
+      try{
+        const itemId=req.params.itemId; // get the id of the item to delete
+        await ToDoItem.deleteOne({_id:itemId}) // remove that item from the database
+        res.redirect('/todo') // go back to the todo page
+      } catch (e){
+        next(e);
+      }
+    }
+  )
+
+  app.get("/todo/completed/:value/:itemId",
+  isLoggedIn,
+  async (req,res,next) => {
+    try{
+      const itemId=req.params.itemId; // get the id of the item to delete
+      const completed = req.params.value=='true';
+      await ToDoItem.findByIdAndUpdate(itemId,{completed}) // remove that item from the database
+      res.redirect('/todo') // go back to the todo page
+    } catch (e){
+      next(e);
+    }
+  }
+)
+
 
 
 
