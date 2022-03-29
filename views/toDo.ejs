@@ -1,17 +1,12 @@
-
-
     <div class="bg-light border border-primary p-3 rounded m-3">
         <h1 class="display-4 text-center">To Do List</h1>
         <p class="lead text-center"><%= items.length %>  items for <%= user['username'] %> to do</p>
     </div>
-
     <hr>
     <ol>
         <% for (item of items){%>
-            <li class="mb-2">
-                
-                <b><%= item.title%>:</b>
-                <i><%= item.description %></i>
+            <li class="mb-2">          
+                <b><%= item.title%>:</b><i><%= item.description %></i>
                 <% if (item.completed) {%>
                     <a href="/todo/completed/false/<%= item._id%>">  Done</a>
                 <% } else {%>
@@ -19,7 +14,6 @@
                 <% } %>
                 <br>
                 <%= item.createdAt %> 
-                    
                 <a href="/todo/delete/<%= item._id%>">(delete)</a>
             </li>
         <% }%>

@@ -1,7 +1,12 @@
+/*
+  auth2.js uses bcrypt and salt to encode passwords ...
+*/
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const User = require('../models/User')
+
 
 
 // This is an example of middleware
@@ -34,12 +39,10 @@ router.post('/login',
   async (req,res,next) => {
     try {
       const {username,passphrase} = req.body
-      const hash = crypto.createHash('sha256');
-      hash.update(passphrase);
-      const encrypted = hash.digest('hex')
-      const user = await User.findOne({username:username,passphrase:encrypted})
+      const user = await User.findOne({username:username})
+      const isMatch = await bcrypt.compare(passphrase,user.passphrase );
 
-      if (user) {
+      if (isMatch) {
         req.session.username = username //req.body
         req.session.user = user
         res.redirect('/')
@@ -60,9 +63,9 @@ router.post('/signup',
       if (passphrase != passphrase2){
         res.redirect('/login')
       }else {
-        const hash = crypto.createHash('sha256');
-        hash.update(passphrase);
-        const encrypted = hash.digest('hex')
+        const encrypted = await bcrypt.hash(passphrase, saltRounds);
+
+        // should check to make sure that username is not taken!!
         
         const user = new User(
           {username:username,
