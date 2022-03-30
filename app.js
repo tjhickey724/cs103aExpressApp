@@ -11,7 +11,6 @@ const express = require("express");
 const path = require("path");  // to refer to local paths
 const cookieParser = require("cookie-parser"); // to handle cookies
 const session = require("express-session"); // to handle sessions using cookies
-//const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
@@ -63,7 +62,6 @@ app.use(layouts);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(bodyParser.urlencoded({ extended: false }));
 
 // Here we specify that static files will be in the public folder
 app.use(express.static(path.join(__dirname, "public")));
