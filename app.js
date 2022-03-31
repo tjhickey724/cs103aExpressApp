@@ -16,6 +16,7 @@ const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
+const courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
 
 
 
@@ -73,7 +74,13 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
-app.get("/demopage", (req, res, next) => {
+app.get("/pa03", (req, res, next) => {
+  res.locals.vals=[2,3,5,7,11,13,17,19]
+  res.locals.timcs = courses.byInstructorEmail('tjhickey')
+  res.render("pa03");
+});
+
+app.get("/demo", (req, res, next) => {
   res.render("demo");
 });
 
@@ -105,6 +112,8 @@ app.get("/boots",
 app.get('/pets', (req,res,next) => {
   res.render('pets')
 })
+
+
 
 
 
