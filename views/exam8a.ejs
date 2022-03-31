@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col bg-primary">
+        <img src="images/cat.jpg" width="100%" class="p-1 m-2 border border-danger">
+        <h1>Cat over Dog</h1>
+        <img src="images/dog.jpg" width="100%" class="p-1 m-2 border border-danger">
+    </div>
+    <div class="col bg-info">
+      <form method="post" action="/petinfo"></form>
+        <h1>Pet Form</h1>
+        What is the name of your pet: <input type="text" name="dogname"><br>
+        What kind of pet do you have?<br>
+        <select name="petkind">
+            <option>dog</option>
+            <option>cat</option>
+            <option>bird</option>
+            <option>other</option>
+        </select>
+        <br>
+        Tell us about your pet<br>
+        <textarea name="petdesc"></textarea>
+        <hr>
+        When was your pet born? 
+        <input type="date" name="bday"><br>
+
+        <input type="submit" value="share" class="mt-5">
+      <form></form>
+    </div>
+    <div class="col bg-primary">
+        <img src="images/dog.jpg" width="100%" class="p-1 m-2 border border-danger">
+        <h1>Dog over Cat</h1>
+        <img src="images/cat.jpg" width="100%" class="p-1 m-2 border border-danger">
+    </div>
+</div>

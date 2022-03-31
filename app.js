@@ -84,6 +84,14 @@ app.get("/demo", (req, res, next) => {
   res.render("demo");
 });
 
+app.get("/exam8a", (req, res, next) => {
+  res.render("exam8a");
+});
+
+app.get("/exam8b", (req, res, next) => {
+  res.render("exam8b");
+});
+
 app.get("/sandbox", 
   (req, res, next) => {
         res.render("sandbox");
