@@ -1,11 +1,12 @@
 
 
-    <div class="jumbotron">
+    <div>
         <h1 class="display-5 text-center">EJS demo</h1>
         <p class="text-center text-primary">Demonstrating EJS features</p>
     </div>
 
-    <% // define some variables for use in the ejs page
+    <% 
+    // define some variables for use in the ejs page
         const adminId = '789sd8f923c'
         const petnames = ["Pippin", "Meri", "Fezco", "Allie"] 
         const person ={'id':adminId, 'name':'Tim','age':66,'dept':'COSI'}
@@ -19,15 +20,66 @@
     %>
     
     <h2>My Pet's names</h2>
-    <% for (name of petnames){%>
-        <%= name %>, 
-    <% } %>
+    <ol>
+        <% for (name of petnames){ %>
+            <li>
+                <%= name %> 
+            </li>
+        
+        <% } %>
+    </ol>
+
+  
+
+    <h2> Old Pet info</h2>
+    <ol>
+    <% for (pet of pets){
+         if (pet.age > 5) { %>
+        <li>
+            <%= pet['name'] %>, <%= pet['species'] %>, <%= pet['age'] %><br>
+        </li>
+    <% }} %>  	
+    </ol>
 
     <hr>
     <h2> Pet info</h2>
-    <% for (pet of pets){%>
-        <%= pet['name'] %>, <%= pet['species'] %>, <%= pet['age'] %><br>
-    <% } %>  
+    <ol>
+    <% for (pet of pets){ %>
+        <li>
+            <%= pet['name'] %>, <%= pet['species'] %>, <%= pet['age'] %><br>
+        </li>
+    <% } %>  	
+    </ol>
+
+    <h2> Pet info</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th><th>Species</th><th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for (pet of pets){ %>
+            <tr>
+                <td><%= pet['name'] %></td><td><%= pet['species'] %></td><td><%= pet['age'] %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+             <tr><th>english</th> <th>Japanese</th></tr>
+        </thead>
+    
+         <tbody>
+              <tr> <td class="text-danger"> one </td> <td> ichi </td> </tr>
+              <tr class="text-primary"> <td> two </td> <td> ni </td> </tr>
+              <tr> <td> three </td> <td> san </td> </tr>
+    
+         </tbody>
+    </table>
+        
 
     <hr>
 

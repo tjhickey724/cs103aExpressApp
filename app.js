@@ -16,7 +16,7 @@ const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 
-const courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
+//const courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
 
 
 
@@ -81,6 +81,23 @@ app.get("/pa03", (req, res, next) => {
 });
 
 app.get("/demo", (req, res, next) => {
+
+  // define some variables for use in the ejs page
+      const adminId = '789sd8f923c'
+      const petnames = ["Pippin", "Meri", "Fezco", "Allie"] 
+      const person ={'id':adminId, 'name':'Tim','age':66,'dept':'COSI'}
+      const pets = 
+        [
+          {'name':'Pippin', 'species':'dog', 'age':18},
+          {'name':'Meri', 'species':'dog', 'age':11},
+          {'name':'Fezco', 'species':'dog', 'age':1},
+          {'name':'Allie', 'species':'cat', 'age':2},
+        ];        
+  res.locals.adminId = adminId
+  res.locals.petnames = petnames
+  res.locals.person = person
+  res.locals.pets = pets
+  
   res.render("demo");
 });
 
