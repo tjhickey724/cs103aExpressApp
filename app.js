@@ -19,14 +19,16 @@ const axios = require('axios')
 
 let courses=[]
 // here is how we load a json file into express from a file:
-//courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
+courses = require('./public/data/courses20-21.json')
 
 // here is how we load a json file into express from another server
+/*
 let getCourses = async () => {
   response = await axios.get('https://www.cs.brandeis.edu/~tim/cs103aSpr22/courses20-21.json');
   courses = response.data 
 }
 getCourses()
+*/
 
 
 // *********************************************************** //
@@ -173,6 +175,7 @@ app.get("/coursedemo/:n",
 app.get("/coursefinder",
   (req,res,next) => {
     res.locals.courses = []
+    res.locals.email="none"
     res.render('coursefinder')
   }
 )
@@ -180,7 +183,14 @@ app.get("/coursefinder",
 app.post("/coursefinder",
 (req,res,next) => {
   const email = req.body.email
-  res.locals.courses = courses.filter(x=>x['instructor'][2]==email)
+  
+  // here we filter and sort the courses before sending to the view to be displayed
+  res.locals.courses = 
+   courses
+    .filter(x=>x['instructor'][2]==email)
+    .filter(x=>(x['enrolled']>0))
+    .sort((x,y) => (y['enrolled']-x['enrolled'])) // must give a comparison function to the sort method
+  res.locals.email = email
   res.render('coursefinder')
 }
 )

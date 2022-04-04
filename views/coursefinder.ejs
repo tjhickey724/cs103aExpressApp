@@ -1,8 +1,15 @@
 <h1>Course finder</h1>
+<h2> Courses taught by <%= email %> are</h2>
 
 <ol>
 <% for (course of courses) {%>
-  <li><%= course['subject'] %> <%= course['coursenum'] %></li>
+  <li class="mb-3">
+      <%= course['subject'] %> 
+      <%= course['coursenum'] %> 
+      <%- course['name'] %><br>
+      (term:  <%- course['term'] %>)
+      (enrollment: <%- course['enrolled'] %>)
+  </li>
 <% } %>
 </ol>
 
@@ -10,3 +17,9 @@
     email: <input type="email" name="email"><br>
     <input type="submit">
 </form>
+
+<% if (courses.length > 0) {%>\
+<pre>
+<%= JSON.stringify(courses[0],null,5) %>
+</pre>>
+<% } %>
