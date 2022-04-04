@@ -15,10 +15,18 @@ const session = require("express-session"); // to handle sessions using cookies
 const bodyParser = require("body-parser"); // to handle HTML form input
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
+const axios = require('axios')
 
-//const courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
+let courses=[]
+// here is how we load a json file into express from a file:
+//courses = require('./public/js/courses'); //load in the courses from the 2020-21 academic year
 
-
+// here is how we load a json file into express from another server
+let getCourses = async () => {
+  response = await axios.get('https://www.cs.brandeis.edu/~tim/cs103aSpr22/courses20-21.json');
+  courses = response.data 
+}
+getCourses()
 
 
 // *********************************************************** //
@@ -145,6 +153,36 @@ app.post("/simpleform",
     res.locals.age=age;
     res.render("simpleresponse")
   }
+)
+
+app.get("/coursedemo",
+  (req,res,next) => {
+    res.locals.course = courses[0]
+    res.render('coursedemo')
+  }
+)
+
+app.get("/coursedemo/:n",
+  (req,res,next) => {
+    const n = parseInt(req.params.n)
+    res.locals.course = courses[n]
+    res.render('coursedemo')
+  }
+)
+
+app.get("/coursefinder",
+  (req,res,next) => {
+    res.locals.courses = []
+    res.render('coursefinder')
+  }
+)
+
+app.post("/coursefinder",
+(req,res,next) => {
+  const email = req.body.email
+  res.locals.courses = courses.filter(x=>x['instructor'][2]==email)
+  res.render('coursefinder')
+}
 )
 
 function factor(n){

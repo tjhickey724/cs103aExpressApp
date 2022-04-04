@@ -1,0 +1,12 @@
+<h1>Course finder</h1>
+
+<ol>
+<% for (course of courses) {%>
+  <li><%= course['subject'] %> <%= course['coursenum'] %></li>
+<% } %>
+</ol>
+
+<form method="post" action="/coursefinder">
+    email: <input type="email" name="email"><br>
+    <input type="submit">
+</form>
