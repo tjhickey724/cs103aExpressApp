@@ -80,7 +80,7 @@ app.get("/pa03", (req, res, next) => {
   res.render("pa03");
 });
 
-app.get("/demo", (req, res, next) => {
+app.get("/ejsdemo", (req, res, next) => {
 
   // define some variables for use in the ejs page
       const adminId = '789sd8f923c'
@@ -98,7 +98,7 @@ app.get("/demo", (req, res, next) => {
   res.locals.person = person
   res.locals.pets = pets
   
-  res.render("demo");
+  res.render("ejsdemo");
 });
 
 app.get("/sandbox", 
@@ -125,6 +125,69 @@ app.get("/boots",
         res.render("bootstrapdemo");
       }
 );
+
+app.get("/routesdemo", 
+  (req, res, next) => {
+        res.render("routesdemo");
+      }
+);
+
+app.get("/simpleform",
+  (req,res,next) => {
+    res.render("simpleform")
+  }
+)
+
+app.post("/simpleform",
+  (req,res,next) => {
+    const {username,age} = req.body;
+    res.locals.username=username;
+    res.locals.age=age;
+    res.render("simpleresponse")
+  }
+)
+
+function factor(n){
+  if (n==1){
+    return(n);
+  }
+  let d=2;
+  while (d*d<=n){
+    if (n%d==0){
+      return d
+    } else {
+      d=d+1
+    }
+  }
+  return(d)
+}
+
+function factorize(n){
+  let factors = []
+  let d = factor(n)
+  while (d>1){
+    factors = factors+[d]
+    n = n//d
+    d = factor(n)
+  }
+  return(factors)
+}
+
+app.get("/factor",
+  (req,res,next) => {
+    res.locals.factors=[]
+    res.render('factorize')
+  }
+)
+
+app.post("/factor",
+  (req,res,next)=> {
+    const {num}=req.body;
+    const n = parseInt(num); // convert string to number
+    res.locals.factors = factorize(n)
+    res.locals.n = n
+    res.render('factorize')
+  })
 
 app.get('/pets', (req,res,next) => {
   res.render('pets')

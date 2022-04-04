@@ -1,0 +1,19 @@
+<div class="text-center p-5 m-5 bg-light border border-primary">
+  <h1 class="display-3">Routes Demo</h1>
+  <p>
+      Here we give demos showing how to communicate between server and client in Express.
+  </p>
+</div>
+
+<h2>Simple demo</h2>
+Our first demo is <a href="/simpleform">/simpleform</a> 
+which generates a form asking for username and age.
+
+When the user fills out the form and hits submit, the data is put into the response header and sent to the server.
+
+The server gets the data from req.body and puts the username and age into the res.locals object. 
+
+The res.render('/simpleresponse')  takes that data and puts it into an HTML page sent back to the user.
+
+
+

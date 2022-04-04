@@ -1,0 +1,11 @@
+<h1>Factorization Demo</h1>
+<% if (factors.length>0){%>
+n=<%= n %><br>
+its factors are 
+<%= JSON.stringify(factors) %>
+<% } %>
+<form method="post" action="/factor">
+    Enter a positive integer:
+    <input type="number" name="num"><br>
+    <input type="submit">
+</form>
