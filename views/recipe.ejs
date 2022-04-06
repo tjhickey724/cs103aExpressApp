@@ -1,0 +1,41 @@
+<h1>Recipe for <%= meal.strMeal %></h1>
+
+<div class="row">
+    <div class="col">
+        <img src="<%= meal.strMealThumb %>" width="100%">
+    </div>
+    <div class="col">
+        <%= meal.strInstructions %>
+    </div>
+    <div class="col">
+        <a href="<%= meal.strSource %>">See Original Recipe</a>
+        <a href="<%= meal.strYoutube %>">Watch Youtube for recipe</a>
+        <hr>
+        <b>Ingredients</b>
+        <ul>
+        <% for (key in meal) {
+            if (key.startsWith('strIngredient')){
+                const ingredient = meal[key]
+                const amountKey = 'strMeasure'+key.slice(13)
+                const amount = meal[amountKey]
+                if (ingredient){ %>                 
+            <li>
+                <%= ingredient %>: <%= amount %>
+            </li>
+            
+        <% }}} %>
+        </ul>
+        <hr>
+        <b>Find another recipe</b>
+        <form method="post" action="/recipes">
+            Enter an ingredient: <input type="text" name="ingredient"><br>
+            <input type="submit">
+        </form>
+    </div>
+</div>
+<hr>
+
+<h2>Here is the JSON object used to generate this page</h2>
+<pre>
+'<%= JSON.stringify(meal,null,5) %>'
+</pre>

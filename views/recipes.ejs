@@ -1,0 +1,40 @@
+<h1>Recipe Finder</h1>
+<i> From <a href="https://www.themealdb.com/">themealdb.com</a></i>
+<hr>
+<form method="post" action="/recipes">
+    Enter an ingredient: <input type="text" name="ingredient">
+    <input type="submit">
+</form>
+
+<% if (meals==[]){%>
+
+  Select an ingredient to get a list of meals.
+
+<% } else  if (meals==null) { %>
+
+    No recipes for <%= ingredient %>
+
+<% } else if (meals.length>0) { %>
+
+    <h2 class="mt-5">Recipes containing <%= ingredient %> </h2>
+    <div class="d-flex flex-wrap text-center overflow-scroll">
+        <% for (meal of meals) {%>
+            <div class="p-3 m-3 border border-primary bg-light w-25">
+                
+                <br>
+                <a href="/recipe/<%= meal.idMeal %>"> 
+                 <img src="<%= meal.strMealThumb %>" width="100" alt="picture of meal">
+                </a>
+                <hr>
+                <%= meal.strMeal %>
+            </div>
+        <% }%>
+        </div>
+
+    <hr>
+    <h2>Here is the JSON object used to generate this page</h2>
+    <pre>
+    '<%= JSON.stringify(meals,null,5) %>'
+    </pre>
+<% } %>
+

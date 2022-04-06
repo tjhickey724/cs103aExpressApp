@@ -241,7 +241,42 @@ app.get('/pets', (req,res,next) => {
   res.render('pets')
 })
 
+app.get('/recipes',
+  async (req,res,next) => {
+    try {
+      res.locals.meals = []
+      res.locals.ingredient = 'none'
+      res.render('recipes')
+    } catch (error) {
+      next(error)     
+    }
+  })
 
+  app.post('/recipes',
+  async (req,res,next) => {
+    try {
+      const response = await axios.get('http://www.themealdb.com/api/json/v1/1/filter.php?i='+req.body.ingredient)
+      res.locals.meals = response.data.meals  // list of objects {strMeal, strMealThumb, idMeal}
+      res.locals.ingredient = req.body.ingredient
+      res.render('recipes')
+      
+    } catch (error) {
+      next(error)     
+    }
+  })
+
+  app.get('/recipe/:idMeal',
+  async (req,res,next) => {
+    try {
+      const response = await axios.get('http://www.themealdb.com/api/json/v1/1/lookup.php?i='+req.params.idMeal)
+      res.locals.meal = response.data.meals[0]  // 
+      console.dir(res.locals.meal)
+      res.render('recipe')
+      
+    } catch (error) {
+      next(error)     
+    }
+  })
 
 
 
@@ -271,6 +306,7 @@ app.set("port", port);
 
 // and now we startup the server listening on that port
 const http = require("http");
+const { application } = require("express");
 const server = http.createServer(app);
 
 server.listen(port);
