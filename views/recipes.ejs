@@ -1,10 +1,16 @@
 <h1>Recipe Finder</h1>
 <i> From <a href="https://www.themealdb.com/">themealdb.com</a></i>
 <hr>
+
 <form method="post" action="/recipes">
-    Enter an ingredient: <input type="text" name="ingredient">
+    Enter an ingredient: <select id="ingredient" name="ingredient">
+  <% for (ingredient of ingredients){ %>
+  <option><%= ingredient%></option>
+  <%}%>
+  </select>
     <input type="submit">
 </form>
+
 
 <% if (meals==[]){%>
 
@@ -17,9 +23,10 @@
 <% } else if (meals.length>0) { %>
 
     <h2 class="mt-5">Recipes containing <%= ingredient %> </h2>
+
     <div class="d-flex flex-wrap text-center overflow-scroll">
         <% for (meal of meals) {%>
-            <div class="p-3 m-3 border border-primary bg-light w-25">
+            <div class="p-3 m-3 border border-primary bg-light">
                 
                 <br>
                 <a href="/recipe/<%= meal.idMeal %>"> 

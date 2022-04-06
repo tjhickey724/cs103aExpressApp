@@ -242,20 +242,25 @@ app.get('/pets', (req,res,next) => {
 })
 
 app.get('/recipes',
-  async (req,res,next) => {
-    try {
-      res.locals.meals = []
+   async (req,res,next) => {
+    const response = 
+        await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
+      res.locals.ingredients = response.data.meals.map(x => x['strIngredient'])
       res.locals.ingredient = 'none'
+      res.locals.meals=[]
       res.render('recipes')
-    } catch (error) {
-      next(error)     
-    }
-  })
+
+   })
 
   app.post('/recipes',
   async (req,res,next) => {
     try {
-      const response = await axios.get('http://www.themealdb.com/api/json/v1/1/filter.php?i='+req.body.ingredient)
+      const response2 = 
+      await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
+    res.locals.ingredients = response2.data.meals.map(x => x['strIngredient'])
+    
+      const response = 
+         await axios.get('http://www.themealdb.com/api/json/v1/1/filter.php?i='+req.body.ingredient)
       res.locals.meals = response.data.meals  // list of objects {strMeal, strMealThumb, idMeal}
       res.locals.ingredient = req.body.ingredient
       res.render('recipes')
@@ -270,7 +275,6 @@ app.get('/recipes',
     try {
       const response = await axios.get('http://www.themealdb.com/api/json/v1/1/lookup.php?i='+req.params.idMeal)
       res.locals.meal = response.data.meals[0]  // 
-      console.dir(res.locals.meal)
       res.render('recipe')
       
     } catch (error) {
