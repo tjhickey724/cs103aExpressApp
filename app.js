@@ -189,7 +189,7 @@ app.get('/upsertDB',
     //await Course.deleteMany({})
     for (course of courses){
       const {coursenum,section,term}=course;
-      await Course.findOneAndUpdate({coursenum,section,term},course,{upsert:true})
+      await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
     }
     const num = await Course.find({}).count();
     res.send("data uploaded: "+num)
@@ -200,7 +200,20 @@ app.get('/courses/byInst/:email',
   async (req,res,next) => {
     const email = req.params.email+"@brandeis.edu";
     const courses = await Course.find({instructor:email,independent_study:false})
-    res.json(courses)
+    //res.json(courses)
+    res.locals.courses = courses
+    res.render('courselist')
+  }
+  
+)
+
+app.post('/courses/byInst',
+  async (req,res,next) => {
+    const email = req.body.email+"@brandeis.edu";
+    const courses = await Course.find({instructor:email,independent_study:false})
+    //res.json(courses)
+    res.locals.courses = courses
+    res.render('courselist')
   }
   
 )

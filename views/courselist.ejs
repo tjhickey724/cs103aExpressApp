@@ -1,0 +1,22 @@
+<h1>The courses are</h1>
+Here we want a ul list with the instructor, coursenum, title, term
+<hr>
+<ul>
+    <% for (course of courses) { %>
+      <li> <%= course['instructor']%>
+          <%=  course['subject'] %>
+          <%=  course['coursenum'] %>
+          <%=  course['section'] %>
+          <%=  course['term'] %>
+        <hr>
+
+    </li>
+    <% } %>
+   </ul>
+   <form method="post" action="/courses/byInst">
+       email: <input type="text" name="email"><br>
+       <input type="submit">
+   </form>
+   <pre>
+       <%= JSON.stringify(courses,null,5) %>
+   </pre>
