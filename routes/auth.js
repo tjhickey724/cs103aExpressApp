@@ -61,7 +61,7 @@ router.post('/login',
         res.redirect('/')
       } else {
         req.session.username = null
-        req.session.user = user
+        req.session.user = null
         res.redirect('/login')
       }
     }catch(e){
