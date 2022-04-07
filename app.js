@@ -92,6 +92,33 @@ app.get("/exam8b", (req, res, next) => {
   res.render("exam8b");
 });
 
+app.get("/exam10a", (req, res, next) => {
+  res.render("exam10a");
+});
+
+app.get("/exam10b", (req, res, next) => {
+  res.render("exam10b");
+});
+
+app.get("/exam10c", (req, res, next) => {
+  res.locals.nums = []
+  res.render("exam10c");
+});
+
+app.get("/exam10c/:a/:b/:c", (req, res, next) => {
+  res.locals.nums = []
+  res.locals.product = parseInt(req.params.a)*parseInt(req.params.b)*parseInt(req.params.c)
+  res.render("exam10c");
+});
+
+app.post("/exam10c", (req, res, next) => {
+  const {a,b,c} = req.body;
+  const avg = (parseInt(a)+parseInt(b)+parseInt(c))/3;
+  res.locals.nums=[a,b,c]
+  res.locals.avg=avg
+  res.render("exam10c");
+});
+
 app.get("/sandbox", 
   (req, res, next) => {
         res.render("sandbox");

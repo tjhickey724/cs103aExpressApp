@@ -1,0 +1,21 @@
+<form method="post" action="exam10c">
+    Enter three integers and press submit to find the average:<br>
+    a <input type="number" name="a"><br>
+    b <input type="number" name="b"><br>
+    c <input type="number" name="c"><br>
+    <input type="submit">
+</form>
+
+<% if (nums.length==3) {%>
+  The average of 
+  <%= nums[0] %>, <%= nums[1] %> and <%= nums[2] %> 
+  is <%= avg %>
+  <hr>
+  <a href="/exam10c/<%= nums[0] %>/<%= nums[1] %>/<%= nums[2] %>">
+      Find the product of a,b,c.
+  </a>"
+<% } else if (nums.length==1) {%>
+    the product of
+    <%= nums[0] %>, <%= nums[1] %> and <%= nums[2] %> 
+    is <%= nums[4] %>
+    <% } %>
