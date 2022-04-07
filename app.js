@@ -13,11 +13,19 @@ const cookieParser = require("cookie-parser"); // to handle cookies
 const session = require("express-session"); // to handle sessions using cookies
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
+const axios = require("axios")
 
 // *********************************************************** //
 //  Loading models
 // *********************************************************** //
 const ToDoItem = require("./models/ToDoItem")
+const Course = require('./models/Course')
+
+// *********************************************************** //
+//  Loading JSON datasets
+// *********************************************************** //
+const courses = require('./public/data/courses20-21.json')
+
 
 // *********************************************************** //
 //  Connecting to the database
@@ -174,6 +182,28 @@ app.get('/todo',
   }
 )
 
+// this route load in the courses into the database
+// or updates the courses if it is a new database
+app.get('/upsertDB',
+  async (req,res,next) => {
+    //await Course.deleteMany({})
+    for (course of courses){
+      const {coursenum,section,term}=course;
+      await Course.findOneAndUpdate({coursenum,section,term},course,{upsert:true})
+    }
+    const num = await Course.find({}).count();
+    res.send("data uploaded: "+num)
+  }
+)
+
+app.get('/courses/byInst/:email',
+  async (req,res,next) => {
+    const email = req.params.email+"@brandeis.edu";
+    const courses = await Course.find({instructor:email,independent_study:false})
+    res.json(courses)
+  }
+  
+)
 
 
 
