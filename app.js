@@ -100,24 +100,24 @@ app.get("/exam10b", (req, res, next) => {
   res.render("exam10b");
 });
 
-app.get("/exam10c", (req, res, next) => {
-  res.locals.nums = []
-  res.render("exam10c");
-});
+// app.get("/exam10c", (req, res, next) => {
+//   res.locals.nums = []
+//   res.render("exam10c");
+// });
 
-app.get("/exam10c/:a/:b/:c", (req, res, next) => {
-  res.locals.nums = []
-  const product = parseInt(req.params.a)*parseInt(req.params.b)*parseInt(req.params.c)
-  res.json({a:req.params.a, b:req.params.b, c:req.params.c, product:product})
-});
+// app.get("/exam10c/:a/:b/:c", (req, res, next) => {
+//   res.locals.nums = []
+//   const product = parseInt(req.params.a)*parseInt(req.params.b)*parseInt(req.params.c)
+//   res.json({a:req.params.a, b:req.params.b, c:req.params.c, product:product})
+// });
 
-app.post("/exam10c", (req, res, next) => {
-  const {a,b,c} = req.body;
-  const avg = (parseInt(a)+parseInt(b)+parseInt(c))/3;
-  res.locals.nums=[a,b,c]
-  res.locals.avg=avg
-  res.render("exam10c");
-});
+// app.post("/exam10c", (req, res, next) => {
+//   const {a,b,c} = req.body;
+//   const avg = (parseInt(a)+parseInt(b)+parseInt(c))/3;
+//   res.locals.nums=[a,b,c]
+//   res.locals.avg=avg
+//   res.render("exam10c");
+// });
 
 app.get("/sandbox", 
   (req, res, next) => {
