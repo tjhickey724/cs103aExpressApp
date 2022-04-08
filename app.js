@@ -107,8 +107,8 @@ app.get("/exam10c", (req, res, next) => {
 
 app.get("/exam10c/:a/:b/:c", (req, res, next) => {
   res.locals.nums = []
-  res.locals.product = parseInt(req.params.a)*parseInt(req.params.b)*parseInt(req.params.c)
-  res.render("exam10c");
+  const product = parseInt(req.params.a)*parseInt(req.params.b)*parseInt(req.params.c)
+  res.json({a:req.params.a, b:req.params.b, c:req.params.c, product:product})
 });
 
 app.post("/exam10c", (req, res, next) => {

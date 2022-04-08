@@ -12,10 +12,7 @@
   is <%= avg %>
   <hr>
   <a href="/exam10c/<%= nums[0] %>/<%= nums[1] %>/<%= nums[2] %>">
-      Find the product of a,b,c.
+      Find the product of a,b,c and send it back as JSON, e.g. 
+      {a:2,b:5,c:3,prod:30}
   </a>"
-<% } else if (nums.length==1) {%>
-    the product of
-    <%= nums[0] %>, <%= nums[1] %> and <%= nums[2] %> 
-    is <%= nums[4] %>
-    <% } %>
+<% } %>
