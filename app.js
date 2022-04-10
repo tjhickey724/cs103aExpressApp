@@ -20,6 +20,7 @@ const axios = require("axios")
 // *********************************************************** //
 const ToDoItem = require("./models/ToDoItem")
 const Course = require('./models/Course')
+const Schedule = require('./models/Schedule')
 
 // *********************************************************** //
 //  Loading JSON datasets
@@ -89,7 +90,8 @@ app.use(
 
 
 // here is the code which handles all /login /signin /logout routes
-const auth = require('./routes/auth')
+const auth = require('./routes/auth');
+const { deflateSync } = require("zlib");
 app.use(auth)
 
 // middleware to test is the user is logged in, and if not, send them to the login page
@@ -111,15 +113,16 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
-app.get("/demopage", (req, res, next) => {
-  res.render("demo");
-});
+/*
+   Course Finder routes
+*/
+app.post('/bySubject',
+  async (req,res,next) => {
+    const {subject}=req.body;  // or equivalently const subject = req.body.subject
+    const courses = await Course.find({subject})
+    res.json(courses)
+  })
 
-app.get("/sandbox", 
-  (req, res, next) => {
-        res.render("sandbox");
-      }
-);
 
 /*
     ToDoList routes
@@ -182,17 +185,78 @@ app.get('/todo',
   }
 )
 
+function getNum(coursenum){
+  i=0;
+  while (i<coursenum.length && '0'<=coursenum[i] && coursenum[i]<='9'){
+    i=i+1;
+  }
+  return coursenum.slice(0,i);
+}
 // this route load in the courses into the database
 // or updates the courses if it is a new database
 app.get('/upsertDB',
   async (req,res,next) => {
     //await Course.deleteMany({})
     for (course of courses){
-      const {coursenum,section,term}=course;
+      const {subject,coursenum,section,term}=course;
+      const num = getNum(coursenum);
+      course.num=num
+      course.suffix = coursenum.slice(num.length)
       await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
     }
     const num = await Course.find({}).count();
     res.send("data uploaded: "+num)
+  }
+)
+
+function times2str(times){
+  if (!times || times.length==0){
+    return ["not scheduled"]
+  } else {
+    return times.map(x => time2str(x))
+  }
+  
+}
+function min2HourMin(m){
+  const hour = Math.floor(m/60);
+  const min = m%60;
+  if (min<10){
+    return `${hour}:0${min}`;
+  }else{
+    return `${hour}:${min}`;
+  }
+}
+
+function time2str(time){
+  const start = time.start
+  const end = time.end
+  const days = time.days
+  const meetingType = time['type'] || "Lecture"
+  const location = time['building'] || ""
+
+  return `${meetingType}: ${days.join(",")}: ${min2HourMin(start)}-${min2HourMin(end)} ${location}`
+}
+
+app.post('/courses/bySubject',
+  async (req,res,next) => {
+    const {subject} = req.body;
+    const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+    
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
+app.get('/courses/show/:courseId',
+  async (req,res,next) => {
+    const {courseId} = req.params;
+    const course = await Course.findOne({_id:courseId})
+    res.locals.course = course
+    res.locals.times2str = times2str
+    //res.json(course)
+    res.render('course')
   }
 )
 
@@ -203,21 +267,68 @@ app.get('/courses/byInst/:email',
     //res.json(courses)
     res.locals.courses = courses
     res.render('courselist')
-  }
-  
+  } 
 )
 
 app.post('/courses/byInst',
   async (req,res,next) => {
     const email = req.body.email+"@brandeis.edu";
-    const courses = await Course.find({instructor:email,independent_study:false})
+    const courses = 
+       await Course
+               .find({instructor:email,independent_study:false})
+               .sort({term:1,num:1,section:1})
     //res.json(courses)
     res.locals.courses = courses
+    res.locals.times2str = times2str
     res.render('courselist')
   }
-  
 )
 
+app.use(isLoggedIn)
+
+app.get('/addCourse/:courseId',
+  async (req,res,next) => {
+    try {
+      const courseId = req.params.courseId
+      const userId = res.locals.user._id
+      // check to make sure it's not already loaded
+      const lookup = await Schedule.find({courseId,userId})
+      if (lookup.length==0){
+        const schedule = new Schedule({courseId,userId})
+        await schedule.save()
+      }
+      res.redirect('/schedule/show')
+    } catch(e){
+      next(e)
+    }
+  })
+
+app.get('/schedule/show',
+  async (req,res,next) => {
+    try{
+      const userId = res.locals.user._id;
+      const courseIds = (await Schedule.find({userId})).map(x => x.courseId)
+      res.locals.courses = await Course.find({_id:{$in: courseIds}})
+      res.render('schedule')
+    } catch(e){
+      next(e)
+    }
+  }
+)
+
+app.get('/schedule/remove/:courseId',
+  async (req,res,next) => {
+    try {
+      await Schedule.remove(
+                {userId:res.locals.user._id,
+                 courseId:req.params.courseId})
+      res.redirect('/schedule/show')
+
+    } catch(e){
+      next(e)
+    }
+  }
+)
 
 
 // here we catch 404 errors and forward to error handler

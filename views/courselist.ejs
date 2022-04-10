@@ -1,26 +1,61 @@
 <h1>The courses are</h1>
 Here we want a ul list with the instructor, coursenum, title, term
 <hr>
-<ul>
-    <% for (course of courses) { %>
-      <li> 
-          <%=  course['subject'] %>
-          <%=  course['coursenum'] %>
-          <%=  course['section'] %>
-          <%=  course['term'] %>
-          --
-          <%= course['instructor']%>
-        <hr>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Semester</th>
+            <th>Course #</th>
+            <th>Course Title</th>
+            <th>Enr/Limit/Waiting</th>
+            <th>Times</th>
+            <th>Instructor</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <% for (course of courses) {
+        const inst = course['instructor'];
+        const term = course.term;
+        const sem = term%10;
+        const semester=['none','Spring 2021','Summer 2021','Fall 2020']
+         %>
+      <tr class="mb-2"> 
+        <td><%= semester[term%10] %></td>
+        <td>
+            <a href="/courses/show/<%=course._id %>">
+            <%=  course['subject'] %>
+            <%=  course['coursenum'] %>  
+            (Section <%=  course['section'] %>) 
 
-    </li>
+            </a>
+        </td>
+
+        <td>
+            <strong><%= course.name %></strong>
+        </td>
+
+        <td>
+            <%=course.enrolled %>/<%=course.limit || 999 %>/<%= course.waiting %>
+        </td>
+
+        <td>
+        <% for (t of times2str(course.times)){%> 
+            <%= t %> <br> 
+        <%} %>
+        </td>
+         <!-- <%= JSON.stringify(course.times) %> <br> -->
+        
+
+        <td>
+          <%= inst[0]+" "+inst[1]%> <br> <%= " ("+inst[2]+")" %>
+        </td>
+    </tr>
     <% } %>
-   </ul>
-   <form method="post" action="/courses/byInst">
-       email: <input type="text" name="email"><br>
-       <input type="submit">
-   </form>
-   <pre>
-      <!-- 
-          <%= JSON.stringify(courses,null,5) %> 
-       -->
-   </pre>
+    </tbody>
+</table>
+
+<pre>
+    <!-- 
+        <%= JSON.stringify(courses,null,5) %> 
+    -->
+</pre>

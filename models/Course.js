@@ -18,6 +18,8 @@ var courseSchema = Schema( {
     code: Mixed,
     subject: String,
     coursenum: String,
+    num: Number,
+    suffix: String,
     name: String,
     independent_study: Boolean,
     term: Number,
