@@ -113,15 +113,6 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
-/*
-   Course Finder routes
-*/
-app.post('/bySubject',
-  async (req,res,next) => {
-    const {subject}=req.body;  // or equivalently const subject = req.body.subject
-    const courses = await Course.find({subject})
-    res.json(courses)
-  })
 
 
 /*
@@ -185,15 +176,63 @@ app.get('/todo',
   }
 )
 
+/* ************************
+  Functions needed for the course finder routes
+   ************************ */
+
 function getNum(coursenum){
+  // separate out a coursenum 103A into 
+  // a num: 103 and a suffix: A
   i=0;
   while (i<coursenum.length && '0'<=coursenum[i] && coursenum[i]<='9'){
     i=i+1;
   }
   return coursenum.slice(0,i);
 }
-// this route load in the courses into the database
-// or updates the courses if it is a new database
+
+
+function times2str(times){
+  // convert a course.times object into a list of strings
+  // e.g ["Lecture:Mon,Wed 10:00-10:50","Recitation: Thu 5:00-6:30"]
+  if (!times || times.length==0){
+    return ["not scheduled"]
+  } else {
+    return times.map(x => time2str(x))
+  }
+  
+}
+function min2HourMin(m){
+  // converts minutes since midnight into a time string, e.g.
+  // 605 ==> "10:05"  as 10:00 is 60*10=600 minutes after midnight
+  const hour = Math.floor(m/60);
+  const min = m%60;
+  if (min<10){
+    return `${hour}:0${min}`;
+  }else{
+    return `${hour}:${min}`;
+  }
+}
+
+function time2str(time){
+  // creates a Times string for a lecture or recitation, e.g. 
+  //     "Recitation: Thu 5:00-6:30"
+  const start = time.start
+  const end = time.end
+  const days = time.days
+  const meetingType = time['type'] || "Lecture"
+  const location = time['building'] || ""
+
+  return `${meetingType}: ${days.join(",")}: ${min2HourMin(start)}-${min2HourMin(end)} ${location}`
+}
+
+
+
+/* ************************
+  Loading (or reloading) the data into a collection
+   ************************ */
+// this route loads in the courses into the Course collection
+// or updates the courses if it is not a new collection
+
 app.get('/upsertDB',
   async (req,res,next) => {
     //await Course.deleteMany({})
@@ -209,35 +248,9 @@ app.get('/upsertDB',
   }
 )
 
-function times2str(times){
-  if (!times || times.length==0){
-    return ["not scheduled"]
-  } else {
-    return times.map(x => time2str(x))
-  }
-  
-}
-function min2HourMin(m){
-  const hour = Math.floor(m/60);
-  const min = m%60;
-  if (min<10){
-    return `${hour}:0${min}`;
-  }else{
-    return `${hour}:${min}`;
-  }
-}
-
-function time2str(time){
-  const start = time.start
-  const end = time.end
-  const days = time.days
-  const meetingType = time['type'] || "Lecture"
-  const location = time['building'] || ""
-
-  return `${meetingType}: ${days.join(",")}: ${min2HourMin(start)}-${min2HourMin(end)} ${location}`
-}
 
 app.post('/courses/bySubject',
+  // show list of courses in a given subject
   async (req,res,next) => {
     const {subject} = req.body;
     const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
@@ -250,6 +263,7 @@ app.post('/courses/bySubject',
 )
 
 app.get('/courses/show/:courseId',
+  // show all info about a course given its courseid
   async (req,res,next) => {
     const {courseId} = req.params;
     const course = await Course.findOne({_id:courseId})
@@ -261,6 +275,7 @@ app.get('/courses/show/:courseId',
 )
 
 app.get('/courses/byInst/:email',
+  // show a list of all courses taught by a given faculty
   async (req,res,next) => {
     const email = req.params.email+"@brandeis.edu";
     const courses = await Course.find({instructor:email,independent_study:false})
@@ -271,6 +286,7 @@ app.get('/courses/byInst/:email',
 )
 
 app.post('/courses/byInst',
+  // show courses taught by a faculty send from a form
   async (req,res,next) => {
     const email = req.body.email+"@brandeis.edu";
     const courses = 
@@ -287,6 +303,7 @@ app.post('/courses/byInst',
 app.use(isLoggedIn)
 
 app.get('/addCourse/:courseId',
+  // add a course to the user's schedule
   async (req,res,next) => {
     try {
       const courseId = req.params.courseId
@@ -304,6 +321,7 @@ app.get('/addCourse/:courseId',
   })
 
 app.get('/schedule/show',
+  // show the current user's schedule
   async (req,res,next) => {
     try{
       const userId = res.locals.user._id;
@@ -320,6 +338,7 @@ app.get('/schedule/show',
 )
 
 app.get('/schedule/remove/:courseId',
+  // remove a course from the user's schedule
   async (req,res,next) => {
     try {
       await Schedule.remove(
