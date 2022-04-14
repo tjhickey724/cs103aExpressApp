@@ -114,6 +114,76 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
+/*
+    Exam 11 routes
+*/
+
+app.get('/exam11a', (req, res, next) => {
+  res.render("exam11a");
+})
+
+// here is a list of courses we will send down to the exam11-ejs view
+const bigcourses =
+  [
+    {'subj': 'COSI',
+    'num': '2A',
+    'term': 'Spring 2017',
+    'inst': 'Hickey, Timothy',
+    'title': 'INTRO TO COMPUTERS',
+    'enr': '158'},
+
+    {'subj': 'COSI',
+    'num': '155B',
+    'term': 'Spring 2018',
+    'inst': 'Hickey, Timothy',
+    'title': 'COMPUTER GRAPHICS',
+    'enr': '155'},
+
+    {'subj': 'COSI',
+    'num': '11A',
+    'term': 'Fall 2018',
+    'inst': 'Hickey, Timothy',
+    'title': 'PROGRAMMING IN JAVA',
+    'enr': '169'},
+
+    {'subj': 'COSI',
+    'num': '164A',
+    'term': 'Spring 2019',
+    'inst': 'Hickey, Timothy',
+    'title': 'INTRO 3-D ANIMATION',
+    'enr': '153'},
+
+    {'subj': 'COSI',
+    'num': '29A',
+    'term': 'Fall 2019',
+    'inst': 'Cherniack, Mitch',
+    'title': 'DISCRETE STRUCTURES',
+    'enr': '154'},
+
+    {'subj': 'COSI',
+    'num': '10A',
+    'term': 'Fall 2019',
+    'inst': 'Hickey, Timothy',
+    'title': 'INTRO PROBLEM SOLVING PYTHON',
+    'enr': '155'},
+
+    {'subj': 'COSI',
+    'num': '164A',
+    'term': 'Fall 2020',
+    'inst': 'Hickey, Timothy J',
+    'title': 'Introduction to 3-D Animation',
+    'enr': '166'}
+  ] 
+
+app.get('/exam11b', (req, res, next) => {
+  res.locals.courses = bigcourses
+  res.render("exam11b");
+})
+
+/*  routes for exam11c and exam11d go here */
+
+
+
 
 
 /*
