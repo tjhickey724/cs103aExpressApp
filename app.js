@@ -113,11 +113,26 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
+app.get("/demo/:subject",
+ async (req,res,next) => {
+  try{
+    const theCourses = await Course.find({subject:req.params.subject})
+    res.json(theCourses)
+  } catch (e){
+    next(e);
+  }
+})
+
 app.get("/demo",
  async (req,res,next) => {
   try{
-    res.locals.courses = await Course.find({enr:{$gt:150}})
-    res.json(courses)
+    const theCourses = 
+        await Course.find(
+          {subject:'COSI',
+          independent_study:true,
+          enrolled:{$gt:100},
+        })
+    res.json(theCourses)
   } catch (e){
     next(e);
   }
