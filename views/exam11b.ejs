@@ -1,1 +1,14 @@
 <h1>Exam11b - EJS</h1>
+
+<% for (course of courses){%>
+  <div class="p-2 m-4 bg-warning border border-primary border-5"> 
+      　<%= course.subj %> <%= course.num %> <%= course.title %>
+      taught by 
+       <%= course.inst %> with <%= course.enr %>  enrolled in term <%= course.term %>
+  </div>
+<% } %>
+
+
+<pre>
+    <%= JSON.stringify(courses,null,5) %>
+</pre>
