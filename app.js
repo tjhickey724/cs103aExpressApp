@@ -33,8 +33,8 @@ const courses = require('./public/data/courses20-21.json')
 // *********************************************************** //
 
 const mongoose = require( 'mongoose' );
-const mongodb_URI = 'mongodb://localhost:27017/cs103a_todo'
-//const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+//const mongodb_URI = 'mongodb://localhost:27017/cs103a_todo'
+const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 mongoose.connect( mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true } );
 // fix deprecation warnings
@@ -113,6 +113,15 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
+app.get("/demo",
+ async (req,res,next) => {
+  try{
+    res.locals.courses = await Course.find({enr:{$gt:150}})
+    res.json(courses)
+  } catch (e){
+    next(e);
+  }
+})
 
 
 /*
@@ -379,6 +388,7 @@ app.set("port", port);
 
 // and now we startup the server listening on that port
 const http = require("http");
+const { reset } = require("nodemon");
 const server = http.createServer(app);
 
 server.listen(port);
