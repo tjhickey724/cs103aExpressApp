@@ -182,7 +182,49 @@ app.get('/exam11b', (req, res, next) => {
 
 /*  routes for exam11c and exam11d go here */
 
+app.get('/exam11c',(req, res, next) => {
+  res.locals.units=null
+  res.render("exam11c");
+})
 
+app.post('/exam11c',
+    async (req,res,next) => {
+      try{
+        const {units,meters} = req.body;
+        const dist = parseFloat(meters)
+
+        res.locals.units=units
+        res.locals.meters = meters
+
+        if (units=='feet'){
+          res.locals.converted = dist*3.2804 
+        } else if (units=='inches'){
+          res.locals.converted = dist*39.3701
+        } else if (units=='yards'){
+          res.locals.converted = dist*1.09361
+        }
+        res.render('exam11c')
+      } catch (e){
+        next(e);
+      }
+    }
+)
+
+app.get('/exam11d', (req, res, next) => {
+  res.render("exam11d");
+})
+
+app.get('/exam11d/:subject/:term',
+    async (req,res,next) => {
+      try{
+        const {subject,term} = req.params;
+        const courses = await Course.find({subject,term,independent_study:false})
+        res.json(courses)
+      } catch (e){
+        next(e);
+      }
+    }
+)
 
 
 
@@ -450,6 +492,7 @@ app.set("port", port);
 
 // and now we startup the server listening on that port
 const http = require("http");
+const { resourceLimits } = require("worker_threads");
 const server = http.createServer(app);
 
 server.listen(port);
