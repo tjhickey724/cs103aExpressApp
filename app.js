@@ -218,7 +218,10 @@ app.get('/exam11d/:subject/:term',
     async (req,res,next) => {
       try{
         const {subject,term} = req.params;
-        const courses = await Course.find({subject,term,independent_study:false})
+        const courses = 
+           await Course.find(
+                  {subject,term,independent_study:false}
+                  )
         res.json(courses)
       } catch (e){
         next(e);
