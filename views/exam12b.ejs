@@ -1,0 +1,12 @@
+<h1>Exam12b - EJS</h1>
+<h2> Large CS courses</h2>
+<div class="d-flex flex-wrap">
+    <% for (course of courses) { %>
+      <div class="border border-info border-5 m-1 p-3">
+          Course: <%= course.subj %> <%= course.num %> <%= course.title %><br>
+          Term: <%= course.term %><br>
+          Instructor: <%= course.inst %><br>
+          Enrollment: <%= course.enr %>
+      </div>
+    <% } %>
+</div>

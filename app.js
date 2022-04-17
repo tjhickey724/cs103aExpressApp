@@ -180,6 +180,17 @@ app.get('/exam11b', (req, res, next) => {
   res.render("exam11b");
 })
 
+app.get('/exam12a', (req, res, next) => {
+  res.render("exam12a");
+})
+
+/
+app.get('/exam12b', (req, res, next) => {
+  res.locals.courses = bigcourses
+  res.render("exam12b");
+})
+
+
 /*  routes for exam11c and exam11d go here */
 
 
