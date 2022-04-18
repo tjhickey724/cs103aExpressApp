@@ -115,11 +115,11 @@ app.get("/about", (req, res, next) => {
 });
 
 /*
-    Exam 11 routes
+    Exam 12 routes
 */
 
-app.get('/exam11a', (req, res, next) => {
-  res.render("exam11a");
+app.get('/exam12a', (req, res, next) => {
+  res.render("exam12a");
 })
 
 // here is a list of courses we will send down to the exam11-ejs view
@@ -175,12 +175,12 @@ const bigcourses =
     'enr': '166'}
   ] 
 
-app.get('/exam11b', (req, res, next) => {
+app.get('/exam12b', (req, res, next) => {
   res.locals.courses = bigcourses
-  res.render("exam11b");
+  res.render("exam12b");
 })
 
-/*  routes for exam11c and exam11d go here */
+
 
 
 
