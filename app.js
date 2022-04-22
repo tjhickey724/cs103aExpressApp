@@ -263,6 +263,19 @@ app.post('/courses/bySubject',
   }
 )
 
+app.post('/courses/byKeyword',
+  // show courses taught by keyword
+  async (req,res,next) => {
+    const {keyword} = req.body;
+    const courses = await Course.find({name:keyword,independent_study:false}).sort({term:1,num:1,section:1})
+
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
 app.get('/courses/show/:courseId',
   // show all info about a course given its courseid
   async (req,res,next) => {

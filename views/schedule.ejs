@@ -1,15 +1,20 @@
-<ul>
+<div class="d-flex flex-wrap text-center overflow-scroll"></div>
     <% for (course of courses){%>
-        <li> 
+        <div class="p-3 m-3 border border-primary bg-info">
             <a href="/schedule/remove/<%= course._id %>">X</a>
-            <%= course['subject'] %>
-            <%= course.coursenum %>
-            <%= course.name %>
-            <%= course.term %>
-            
-        </li>
+          Sub: <%= course['subject'] %>
+           Num: <%= course.coursenum %>
+           <br>
+           Name: <%= course.name %>
+           Term:<%= course.term %>
+            <br>
+           Limit: <%=course.limit || 999 %>
+           Enrollment : Enrollment: <%=course.enrolled %>
+           <br>
+           About: <%=course.description %>
+        </div>
     <% } %>
-</ul>
+</div>
 
 <!--
     <pre>
