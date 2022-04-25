@@ -29,7 +29,7 @@ const courses = require('./public/data/courses20-21.json')
 
 
 // *********************************************************** //
-//  Connecting to the database
+//  Connecting to the database 
 // *********************************************************** //
 
 const mongoose = require( 'mongoose' );
