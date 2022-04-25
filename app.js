@@ -14,6 +14,8 @@ const session = require("express-session"); // to handle sessions using cookies
 const debug = require("debug")("personalapp:server"); 
 const layouts = require("express-ejs-layouts");
 const axios = require("axios")
+var MongoDBStore = require('connect-mongodb-session')(session);
+
 
 // *********************************************************** //
 //  Loading models
@@ -57,6 +59,29 @@ db.once('open', function() {console.log("we are connected!!!")});
 // a server that respond to requests by sending responses
 // *********************************************************** //
 const app = express();
+
+var store = new MongoDBStore({
+  uri: mongodb_URI,
+  collection: 'mySessions'
+});
+
+// Catch errors
+store.on('error', function(error) {
+  console.log(error);
+});
+
+app.use(require('express-session')({
+  secret: 'This is a secret',
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+  },
+  store: store,
+  // Boilerplate options, see:
+  // * https://www.npmjs.com/package/express-session#resave
+  // * https://www.npmjs.com/package/express-session#saveuninitialized
+  resave: true,
+  saveUninitialized: true
+}));
 
 // Here we specify that we will be using EJS as our view engine
 app.set("views", path.join(__dirname, "views"));
