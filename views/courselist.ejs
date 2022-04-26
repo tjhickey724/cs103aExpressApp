@@ -22,16 +22,22 @@ Here we want a ul list with the instructor, coursenum, title, term
       <tr class="mb-2"> 
         <td><%= semester[term%10] %></td>
         <td>
-            <a href="/courses/show/<%=course._id %>">
-            <%=  course['subject'] %>
-            <%=  course['coursenum'] %>  
-            (Section <%=  course['section'] %>) 
-
+            <a href="/courses/bySubject/<%=course.subject %>">
+              <%=  course['subject'] %>
+            </a><a href="/courses/bySubject/<%=course.subject %>/<%= course.coursenum %>">
+              <%=  course['coursenum'] %> 
+            </a><a href="/courses/bySubject/<%=course.subject %>/<%= course.coursenum %>/<%= course.section %>">
+                (Section <%=  course['section'] %>)
             </a>
+            
+
+ 
         </td>
 
         <td>
-            <strong><%= course.name %></strong>
+            <a href="/courses/byName/<%=course.name %>">
+               <strong><%= course.name %></strong>
+            </a>
         </td>
 
         <td>
@@ -39,15 +45,19 @@ Here we want a ul list with the instructor, coursenum, title, term
         </td>
 
         <td>
-        <% for (t of times2str(course.times)){%> 
-            <%= t %> <br> 
-        <%} %>
+            <a href="/courses/show/<%=course._id %>">
+                <% for (t of times2str(course.times)){%> 
+                    <%= t %> <br> 
+                <%} %>
+            </a>
         </td>
          <!-- <%= JSON.stringify(course.times) %> <br> -->
         
 
         <td>
-          <%= inst[0]+" "+inst[1]%> <br> <%= " ("+inst[2]+")" %>
+          <a href="/courses/byInst/<%= inst[2] %>">
+             <%= inst[0]+" "+inst[1]%> <br> <%= " ("+inst[2]+")" %>
+          </a>
         </td>
     </tr>
     <% } %>

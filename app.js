@@ -294,7 +294,7 @@ app.get('/upsertDB',
       course.suffix = coursenum.slice(num.length)
       await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
     }
-    const num = await Course.find({}).count();
+    const num = await Course.find({}).countDocuments();
     res.send("data uploaded: "+num)
   }
 )
@@ -305,6 +305,45 @@ app.post('/courses/bySubject',
   async (req,res,next) => {
     const {subject} = req.body;
     const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+    
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+app.get('/courses/bySubject/:subject',
+  // show list of courses in a given subject
+  async (req,res,next) => {
+    const {subject} = req.params;
+    const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+    
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
+app.get('/courses/bySubject/:subject/:coursenum',
+  // show list of courses in a given subject
+  async (req,res,next) => {
+    const {subject,coursenum} = req.params;
+    const courses = await Course.find({subject,coursenum,independent_study:false}).sort({term:1,num:1,section:1})
+    
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
+app.get('/courses/bySubject/:subject/:coursenum/:section',
+  // show list of courses in a given subject
+  async (req,res,next) => {
+    const {subject,coursenum,section} = req.params;
+    const courses = 
+      await Course.find({subject,coursenum,section,independent_study:false}).sort({term:1,num:1,section:1})
     
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -328,8 +367,26 @@ app.get('/courses/show/:courseId',
 app.get('/courses/byInst/:email',
   // show a list of all courses taught by a given faculty
   async (req,res,next) => {
-    const email = req.params.email+"@brandeis.edu";
-    const courses = await Course.find({instructor:email,independent_study:false})
+    let email = req.params.email;
+    email = (email.indexOf('@')>0?email:email+"@brandeis.edu")
+    const courses = 
+       await Course
+         .find({instructor:email,independent_study:false})
+         .sort({term:1,coursenum:1})
+    //res.json(courses)
+    res.locals.courses = courses
+    res.locals.times2str = times2str
+    res.render('courselist')
+  } 
+)
+
+app.get('/courses/byName/:name',
+  async (req,res,next) => {
+    let name = req.params.name;
+    const courses = 
+       await Course
+         .find({name})
+         .sort({term:1})
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
