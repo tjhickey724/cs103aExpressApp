@@ -363,43 +363,89 @@ app.post('/courses/byInst',
   and then use it to find the total number of students
   enrolled in each subject
 */
-const aggAvgEnrollByInst = 
+const demo4stages =
+
+    [
+      // first we add a new field, email, which is the third element of the instructor value
+      { $addFields: {  email: { $arrayElemAt: [ '$instructor', 2]}}},
+
+      // then we filter out courses with <8 students
+      {$match: {  enrolled: {$gt:8}}},
+
+      // then we group by email and find average enrollment
+      {$group: {
+            _id: '$email',
+            courseCount: {  $avg: '$enrolled'}
+        }},
+
+      // then we sort by courseCount, decreasing
+      {$sort: { 'courseCount': -1}}
+    ]
+
+
+const pivotDemo = 
       [
-        { // first we add a new field, email
-          '$addFields': {
-            'email': {
-              '$arrayElemAt': [
-                '$instructor', 2
-              ]
-            }
-          }
-        }, { // then we filter out courses with <8 students
-          '$match': {
+        { // then we filter out courses with <8 students
+          $match: {
             'enrolled': {
-              '$gt': 8
+              '$gte': 8
             }
           }
-        }, {// then we group by email and find average enrollment
-          '$group': {
-            '_id': '$email', 
+        }, {// then we group by email and find various enrollment stats
+          $group: {
+            '_id': '$instructor', 
             'courseCount': {
+              '$sum': 1
+            },
+            'avgClassSize': {
               '$avg': '$enrolled'
+            },
+            'maxClassSize': {
+              '$max': '$enrolled'
+            },
+            'minClassSize': {
+              '$min': '$enrolled'
+            },
+            'totalEnrollment': {
+              '$sum': '$enrolled'
+            },
+            'classes':{
+              '$push': {s:'$subject',c:'$coursenum',z:'$section',t:'$term',e:'$enrolled',n:'$name'}
             }
           }
-        }, { // then we sort by courseCount, decreasing
-          '$sort': {
-            'courseCount': -1
+        }, // then we filter for faculty with at least 300 students total
+            {$match: {
+              'totalEnrollment': {
+                '$gte': 300
+              }
+            }
+          }, { // then we sort by courseCount, decreasing
+          $sort: {
+            'totalEnrollment': -1
           }
         }
       ]
 
 
-app.get('/enrolled/byInstructor',
+app.get('/demo4stages',
   async (req,res,next) => {
    try {
     const enrollments = 
       await Course.aggregate(
-        aggAvgEnrollByInst
+        demo4stages
+      )
+    res.json(enrollments)
+   } catch(error) {
+     next(error)
+   }
+  })
+
+  app.get('/pivot/onInstructor',
+  async (req,res,next) => {
+   try {
+    const enrollments = 
+      await Course.aggregate(
+        pivotDemo
       )
     res.json(enrollments)
    } catch(error) {
