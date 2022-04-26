@@ -332,6 +332,7 @@ app.get('/courses/byInst/:email',
     const courses = await Course.find({instructor:email,independent_study:false})
     //res.json(courses)
     res.locals.courses = courses
+    res.locals.times2str = times2str
     res.render('courselist')
   } 
 )
@@ -339,17 +340,91 @@ app.get('/courses/byInst/:email',
 app.post('/courses/byInst',
   // show courses taught by a faculty send from a form
   async (req,res,next) => {
-    const email = req.body.email+"@brandeis.edu";
-    const courses = 
-       await Course
-               .find({instructor:email,independent_study:false})
-               .sort({term:1,num:1,section:1})
-    //res.json(courses)
-    res.locals.courses = courses
-    res.locals.times2str = times2str
-    res.render('courselist')
+    try {
+          const email = req.body.email+"@brandeis.edu";
+          const courses = 
+            await Course
+                    .find({instructor:email,independent_study:false})
+                    .sort({term:1,num:1,section:1})
+          //res.json(courses)
+          res.locals.courses = courses
+          res.locals.times2str = times2str
+          res.render('courselist')
+    } catch(error){
+      next(error)
+    }
   }
 )
+
+/*
+  aggregation example ...
+  here we create an aggregation pipeline using the
+  mongo compass aggregation tool
+  and then use it to find the total number of students
+  enrolled in each subject
+*/
+const aggAvgEnrollByInst = 
+      [
+        { // first we add a new field, email
+          '$addFields': {
+            'email': {
+              '$arrayElemAt': [
+                '$instructor', 2
+              ]
+            }
+          }
+        }, { // then we filter out courses with <8 students
+          '$match': {
+            'enrolled': {
+              '$gt': 8
+            }
+          }
+        }, {// then we group by email and find average enrollment
+          '$group': {
+            '_id': '$email', 
+            'courseCount': {
+              '$avg': '$enrolled'
+            }
+          }
+        }, { // then we sort by courseCount, decreasing
+          '$sort': {
+            'courseCount': -1
+          }
+        }
+      ]
+
+
+app.get('/enrolled/byInstructor',
+  async (req,res,next) => {
+   try {
+    const enrollments = 
+      await Course.aggregate(
+        aggAvgEnrollByInst
+      )
+    res.json(enrollments)
+   } catch(error) {
+     next(error)
+   }
+  })
+
+
+app.get('/bigclasses/:size',
+  async (req,res,next) => {
+   try {
+    const size = parseInt(req.params.size)
+    const enrollments = 
+      await Course.aggregate(
+        [
+          {$match:{'enrolled':{$gt:size}}},
+          {$sort:{'enrolled':1}}
+        ]
+      )
+    res.json(enrollments)
+   } catch(error) {
+     next(error)
+   }
+  })
+
 
 app.use(isLoggedIn)
 
