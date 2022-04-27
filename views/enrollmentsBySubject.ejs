@@ -1,0 +1,45 @@
+
+<h1>
+    Enrollments in <%= subject %>
+  </h1>
+
+  <ol>
+    
+      <table class="table table-striped table-bordered">
+          <thead>
+              <tr>
+                  <th>Course</th>
+                  <th>total enrollment</th>
+                  <th>number of courses</th>
+                  <th>average class size</th>
+                  <th>max class size</th>
+                  <th>min class size</th>
+              </tr>
+
+          </thead>
+          <tbody>
+            <% for (course of enrollments) {%>
+              <tr>
+                  <td> 
+                     <a href="/courses/byInst/<%=course._id[2] %>">
+                      <%= course._id %> 
+                     </a>
+                  </td>
+                  <td><%= course.totalEnrollment %> </td>
+                  <td><%= course.courseCount %> </td>
+                  <td><%= course.avgClassSize %> </td>
+                  <td><%= course.maxClassSize %> </td>
+                  <td><%= course.minClassSize %> </td>
+                  
+              </tr>
+            <% } %>
+
+          </tbody>
+ 
+        </table>
+      
+  </ol>
+
+
+  
+  

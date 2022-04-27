@@ -17,10 +17,11 @@ Here we want a ul list with the instructor, coursenum, title, term
         const inst = course['instructor'];
         const term = course.term;
         const sem = term%10;
-        const semester=['none','Spring 2021','Summer 2021','Fall 2020']
+        const year = (Math.round(term/10))%100
+        const semester=['none','Spring 20','Summer 20','Fall 20']
          %>
       <tr class="mb-2"> 
-        <td><%= semester[term%10] %></td>
+        <td><%= semester[sem]+year %></td>
         <td>
             <a href="/courses/bySubject/<%=course.subject %>">
               <%=  course['subject'] %>

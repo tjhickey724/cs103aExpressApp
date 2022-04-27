@@ -27,9 +27,10 @@ const Schedule = require('./models/Schedule')
 // *********************************************************** //
 //  Loading JSON datasets
 // *********************************************************** //
-const courses = require('./public/data/courses20-21.json')
-
-
+//const courses = require('./public/data/courses21-22.json')
+const courses2021 = require('./public/data/courses20-21.json')
+const courses2122 = require('./public/data/courses21-22.json')
+const courses = courses2122
 // *********************************************************** //
 //  Connecting to the database 
 // *********************************************************** //
@@ -286,8 +287,8 @@ function time2str(time){
 
 app.get('/upsertDB',
   async (req,res,next) => {
-    //await Course.deleteMany({})
-    for (course of courses){
+    await Course.deleteMany({})
+    for (course of courses){ 
       const {subject,coursenum,section,term}=course;
       const num = getNum(coursenum);
       course.num=num
@@ -326,7 +327,7 @@ app.get('/courses/bySubject/:subject',
 )
 
 app.get('/courses/bySubject/:subject/:coursenum',
-  // show list of courses in a given subject
+  // show list of courses in a given subject 
   async (req,res,next) => {
     const {subject,coursenum} = req.params;
     const courses = await Course.find({subject,coursenum,independent_study:false}).sort({term:1,num:1,section:1})
@@ -371,8 +372,8 @@ app.get('/courses/byInst/:email',
     email = (email.indexOf('@')>0?email:email+"@brandeis.edu")
     const courses = 
        await Course
-         .find({instructor:email,independent_study:false})
-         .sort({term:1,coursenum:1})
+         .find({instructor:email,enrolled:{$gt:0}})
+         .sort({term:1,enrolled:-1,coursenum:1})
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -385,8 +386,8 @@ app.get('/courses/byName/:name',
     let name = req.params.name;
     const courses = 
        await Course
-         .find({name})
-         .sort({term:1})
+         .find({name,enrolled:{$gt:0}})
+         .sort({term:1,enrolled:-1})
     //res.json(courses)
     res.locals.courses = courses
     res.locals.times2str = times2str
@@ -483,6 +484,39 @@ const pivotDemo =
         }
       ]
 
+const deptTeachingLoads = (dept) => 
+      [
+        { // then we filter out courses with <8 students
+          $match: {
+            'subject': dept,
+            'enrolled':{$gt:0},
+          }
+        }, {// then we group by email and find various enrollment stats
+          $group: {
+            '_id': '$instructor', 
+            'courseCount': {
+              '$sum': 1
+            },
+            'avgClassSize': {
+              '$avg': '$enrolled'
+            },
+            'maxClassSize': {
+              '$max': '$enrolled'
+            },
+            'minClassSize': {
+              '$min': '$enrolled'
+            },
+            'totalEnrollment': {
+              '$sum': '$enrolled'
+            },
+          }
+        }, { // then we sort by courseCount, decreasing
+          $sort: {
+            'totalEnrollment': -1
+          }
+        }
+      ]
+
 
 app.get('/demo4stages',
   async (req,res,next) => {
@@ -509,6 +543,24 @@ app.get('/demo4stages',
      next(error)
    }
   })
+
+
+  app.get('/deptTeachingLoads/:subject',
+  async (req,res,next) => {
+   try {
+    const enrollments = 
+      await Course.aggregate(
+        deptTeachingLoads(req.params.subject)
+      )
+    res.locals.subject = req.params.subject
+    res.locals.enrollments = enrollments
+    res.render('enrollmentsBySubject')
+   } catch(error) {
+     next(error)
+   }
+  })
+
+
 
 
 app.get('/bigclasses/:size',
