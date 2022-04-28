@@ -1,0 +1,25 @@
+13a
+
+13b
+app.get('/getnames/:name/:sex',
+  async (req,res,next) => {
+    try {
+      const {name,sex} = req.params
+      res.locals.people = await Name.find({name,sex})
+      res.render('exam13b-result')
+    } catch (error) {
+      next(error)
+    }
+  })
+
+13c
+const popularNames = [
+  {$group:{
+    _id:['$name','$sex'],
+    counter: {$sum:'$count'}
+  }},
+  {$sort:{
+    counter:-1
+  }},
+]
+

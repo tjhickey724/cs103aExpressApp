@@ -23,6 +23,7 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 const ToDoItem = require("./models/ToDoItem")
 const Course = require('./models/Course')
 const Schedule = require('./models/Schedule')
+const Overheard = require('./models/Overheard')
 
 // *********************************************************** //
 //  Loading JSON datasets
@@ -136,6 +137,35 @@ const isLoggedIn = (req,res,next) => {
 app.get("/", (req, res, next) => {
   res.render("index");
 });
+
+app.get("/coursefinder", (req, res, next) => {
+  res.render("coursefinder");
+});
+
+app.get('/overheardForm',
+  (req,res,next) => {
+    res.render('overheardForm')
+  })
+
+app.post('/overheard',
+  isLoggedIn,
+  async (req,res,next) => {
+    const {overheard} = req.body
+    const item = new Overheard({
+      userId: req.session.user._id,
+      comment:overheard,
+      createAt: new Date()
+    })
+    await item.save()
+    res.redirect('/overheard')
+  })
+
+  app.get('/overheard', 
+    async (req,res,next) => {
+      const items = await Overheard.find({})
+      res.json(items)
+      //res.render('overheard')
+    })
 
 app.get("/about", (req, res, next) => {
   res.render("about");
