@@ -187,18 +187,20 @@ app.get("/about", (req, res, next) => {
 // Here is where we loaded in the names data,
 // but you don't have to do this as I have preloaded it
 // 
-// const names = require('./public/data/names.json')
-// app.get('/loadNames',
-//   async (req,res,next) => {
-//     try {
-//       await Name.deleteMany({})
-//       await Name.insertMany(names)
-//       const n = await Name.find({name:'Timothy',sex:'M'})
-//       res.json(n)
-//     } catch (error) {
-//       next(error)
-//     }
-//})
+const names = require('./public/data/names.json')
+app.get('/loadNames',
+  isLoggedIn,  // only allow logged in people to do this..
+  (req,res,next) => {next()}, // don't let anyone reload...
+  async (req,res,next) => {
+    try {
+      await Name.deleteMany({})
+      await Name.insertMany(names)
+      const n = await Name.find({name:'Timothy',sex:'M'})
+      res.json(n)
+    } catch (error) {
+      next(error)
+    }
+})
 
 // here we catch 404 errors and forward to error handler
 app.use(function(req, res, next) {
