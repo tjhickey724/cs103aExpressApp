@@ -428,7 +428,7 @@ const demo4stages =
       { $addFields: {  email: { $arrayElemAt: [ '$instructor', 2]}}},
 
       // then we filter out courses with <8 students
-      {$match: {  enrolled: {$gt:8}}},
+      {$match: {  enrolled: {$gte:8}}},
 
       // then we group by email and find average enrollment
       {$group: {
@@ -560,8 +560,35 @@ app.get('/demo4stages',
    }
   })
 
+  const smallClassDepts = 
+  [
+    {
+      '$match': {
+        'enrolled': {
+          '$lt': 10
+        }
+      }
+    }, {
+      '$group': {
+        '_id': '$subject', 
+        'numStudents': {
+          '$sum': '$enrolled'
+        }
+      }
+    }, {
+      '$sort': {
+        'numStudents': -1
+      }
+    }
+  ]
 
 
+app.get('/smallclasses', 
+  async (req,res,next) => {
+    const data = await Course.aggregate(smallClassDepts)
+    res.json(data)
+
+})
 
 app.get('/bigclasses/:size',
   async (req,res,next) => {
@@ -655,7 +682,7 @@ app.use(function(err, req, res, next) {
 //  Starting up the server!
 // *********************************************************** //
 //Here we set the port to use between 1024 and 65535  (2^16-1)
-const port = process.env.PORT || "5000";
+const port = process.env.PORT || "5000"; 
 console.log('connecting on port '+port)
 
 app.set("port", port);
