@@ -1,0 +1,13 @@
+<h1>Exam13c - Aggregation</h1>
+
+Write the pipeline code to generate a list of the most popular 20 names
+this millenia by grouping by the name/sex and summing the count, then sorting by count decreasing.
+
+<ul>
+    <% for (person of people) {%>
+       <li>
+           <%= person.counter %>:
+           <%= person._id %>
+       </li>
+    <% } %>
+</ul>

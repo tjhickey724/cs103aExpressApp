@@ -1,0 +1,14 @@
+<table class="table table-bordered table-striped">
+  <tbody>
+    <% for (person of people ){%>
+      <tr>
+        <td><%= person.name  %></td>
+        <td><%= person.sex  %> </td>
+        <td><%= person.count  %> </td>
+        <td><%= person.year  %> </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+<pre><%= JSON.stringify(people,null,5) %>
+</pre>
