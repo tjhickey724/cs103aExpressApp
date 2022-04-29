@@ -141,10 +141,10 @@ app.get('/exam13a-routing', (req,res,next) =>{
 })
 
 app.post('/exam13a-routing', (req,res,next) => {
-  // add the routing code to calculate the BMI
-  // and send the appropriate info back to 
-  // exam13a-result
-  res.send('under construction')
+  const {inches,pounds}= req.body
+  const bmi = 703*pounds/(inches*inches)
+  res.locals = {bmi,inches,pounds, ...res.locals}
+  res.render('exam13a-result')
 })
 
 
@@ -155,14 +155,29 @@ app.get('/exam13b-mongodb', (req,res,next) =>{
 
 app.get('/getnames/:name/:sex',
   async (req,res,next) => {
-    res.send('under construction')
+    try {
+      const {name,sex} = req.params
+      res.locals.people = await Name.find({name,sex})
+      res.render('exam13b-result')
+    } catch (error) {
+      next(error)
+    }
   })
+
+
 
 // put the code for exam13b here to handle the routes
 // of the form getnames/Timothy/M, etc.
 
+
 const popularNames = [
- // put the aggregation pipeline here!
+  {$group:{
+    _id:['$name','$sex'],
+    counter: {$sum:'$count'}
+  }},
+  {$sort:{
+    counter:-1
+  }},
 ]
 
 app.get('/exam13c-aggregation', 
@@ -232,6 +247,7 @@ app.set("port", port);
 const http = require("http");
 const { reset } = require("nodemon");
 const { pseudoRandomBytes } = require("crypto");
+const { resourceLimits } = require("worker_threads");
 const server = http.createServer(app);
 
 server.listen(port);
