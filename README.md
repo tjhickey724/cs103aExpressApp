@@ -3,6 +3,7 @@
 This is a starter project which has a simple authentication module 
 and provides access to a mongoose database in the cloud.
 For this app the user can query for specific courses based on the course title, course subject, or Instructor email
+Contributors: Benjamin Beizer, Ava Harnick, Hannah Whitmore, Oren Kagan
 
 
 ## Installation
