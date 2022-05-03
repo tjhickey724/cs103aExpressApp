@@ -1,0 +1,34 @@
+13a
+app.post('/exam13a-routing', (req,res,next) => {
+    // add the routing code to calculate the BMI
+    // and send the appropriate info back to 
+    // exam13a-result
+    const {inches,pounds}= req.body
+    const bmi = 703*pounds/(inches*inches)
+    res.locals = {bmi,inches,pounds, ...res.locals}
+    res.render('exam13a-result')   
+  })
+
+13b
+app.get('/getnames/:name/:sex',
+  async (req,res,next) => {
+    try {
+      const {name,sex} = req.params
+      res.locals.people = await Name.find({name,sex})
+      res.render('exam13b-result')
+    } catch (error) {
+      next(error)
+    }
+  })
+
+13c
+const popularNames = [
+  {$group:{
+    _id:['$name','$sex'],
+    counter: {$sum:'$count'}
+  }},
+  {$sort:{
+    counter:-1
+  }},
+]
+
