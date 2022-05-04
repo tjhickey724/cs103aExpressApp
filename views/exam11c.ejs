@@ -1,0 +1,28 @@
+<h1>Exam11c - Routing</h1>
+<div class="row">
+    <div class="col">
+        <form method="post" action="/exam11c">
+            Number of Meters <input type="text" name="meters"><br>
+
+            Convert to <select name="units">
+                <option>inches</option>
+                <option>feet</option>
+                <option>yards</option>
+            </select><br>
+            <input type="submit">
+        </form>
+    </div>
+
+    <div class="col">
+        <% if (units) {%> 
+            <%= meters %> meters = <%= converted %> <%= units %>
+        <% } else { %>
+        Nothing to convert...
+        <% } %>
+    </div>
+
+    <div class="col">
+        <h5>Conversion rules</h5>
+        1 meter<br> = 3.2804 feet<br> = 39.2701 inches <br>= 1.09361 yards
+    </div>
+</div>

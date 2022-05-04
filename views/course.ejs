@@ -1,0 +1,38 @@
+<div class="bg-light m-5 p-2 border border-primary border-2">
+    <div class="">
+        <span>
+            <%= course.subject %> 
+            <%= course.coursenum %> 
+            <%= course.term %> 
+        </span>
+        <strong><%= course.name %></strong>
+        
+    </div>
+    <div class="mb-1">
+        <%=course.instructor[0] %>
+        <%=course.instructor[1] %>
+        (<%=course.instructor[2] %>)
+    </div>
+    <div><a href="/addCourse/<%= course['_id'] %>">(add to schedule)</a></div>
+    <div class="mb-1">
+       Enrollment: <%=course.enrolled %>,
+       Limit: <%=course.limit || 999 %>,
+       Waitlist: <%= course.waiting %>
+       <br>
+       Times: <%= times2str(course.times) %>
+    </div>
+    <div class="">
+        <em><%=course.details %></em>
+    </div>
+    <div class="p-3">
+        <%=course.description %>
+    </div>
+
+</div>
+
+<hr>
+
+<pre>
+    <%= JSON.stringify(course,null,5) %>
+</pre>
+-->

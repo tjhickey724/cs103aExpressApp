@@ -1,0 +1,29 @@
+    <div class="bg-light border border-primary p-3 rounded m-3">
+        <h1 class="display-4 text-center">To Do List</h1>
+        <p class="lead text-center"><%= items.length %>  items for <%= user['username'] %> to do</p>
+    </div>
+    <hr>
+    <ol>
+        <% for (item of items){%>
+            <li class="mb-2">          
+                <b><%= item.title%>:</b><i><%= item.description %></i>
+                <% if (item.completed) {%>
+                    <a href="/todo/completed/false/<%= item._id%>">  Done</a>
+                <% } else {%>
+                    <a href="/todo/completed/true/<%= item._id%>"> In Process</a>
+                <% } %>
+                <br>
+                <%= item.createdAt %> 
+                <a href="/todo/delete/<%= item._id%>">(delete)</a>
+            </li>
+        <% }%>
+    </ol>
+    <hr>
+    <form method="post" action="/todo/add">
+        title:<input type="text" name="title"><br>
+        description:<input type="text" name="description"><br>
+        <input type="submit" value="Save Item"><br>
+    </form>
+    
+
+

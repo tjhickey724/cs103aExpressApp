@@ -1,0 +1,18 @@
+<ul>
+    <% for (course of courses){%>
+        <li> 
+            <a href="/schedule/remove/<%= course._id %>">X</a>
+            <%= course['subject'] %>
+            <%= course.coursenum %>
+            <%= course.name %>
+            <%= course.term %>
+            
+        </li>
+    <% } %>
+</ul>
+
+<!--
+    <pre>
+        <%= JSON.stringify(courses,null,5) %>
+    </pre>
+-->

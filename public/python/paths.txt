@@ -1,0 +1,12 @@
+test.png  good
+test.jpg  good
+photo.gif  good
+photos/A/b.tif good
+../../old/images/cat.jpg good
+file.txt bad, wrong suffix
+two word.png bad, spaces in file name
+a/two word/b.jpg bad, space in folder name
+./dog.jpg  good
+././.././../folder/file.png good
+picture,png  bad,  no period before suffix
+a//wierd.png  bad, double slash
