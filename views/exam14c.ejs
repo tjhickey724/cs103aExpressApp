@@ -1,0 +1,15 @@
+<h2>Calculate your age in Days</h2>
+<form method="post" action="exam14c">
+    Enter your age in years:
+    <input type="number" name="ageInYears"><br>
+    <input type="submit">
+</form>
+<hr>
+<h2>Age in Days</h2>
+
+<% if (ageInDays>0) {%>
+If your age in years is <%= ageInYears %><br>
+then your age in days is <%= ageInDays %>
+<% } else {%>
+Enter your age in years above and press submit
+<% } %>

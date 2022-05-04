@@ -1,0 +1,14 @@
+dates of the form dd MON yyyy hh:mm:ss
+1 Jan 2022, good
+4 Jul 1776, good
+24 Jul 1955, good
+3 May 2022, good
+5 June 2022, bad, 4 letter month
+July 4, 1776, bad 
+7 Lol 2222, bad not a real month
+123 Jan 1234, bad 3 digit date
+12 Dec 501, bad 3 digit year
+12 Dec 12345, bad 5 digit year
+1f Dec 2022, bad letter in date
+11 Dec 200a, bad letter in year
+11 Dec 2022 bad, no comma after year
